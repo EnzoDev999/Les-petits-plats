@@ -21,8 +21,7 @@ a:hover {
   color: #ffc328;
 }
 
-ul,
-ol {
+ul, ol {
   list-style-type: none;
 }
 
@@ -36,7 +35,7 @@ button {
   max-width: 1440px;
   margin: 0 auto;
   padding: 2rem;
-  background-color: #ededed;
+  background-color: #EDEDED;
 }
 
 .card_section {
@@ -90,7 +89,7 @@ button {
 .header_cta h1 {
   display: flex;
   flex-direction: column;
-  color: #ffd15b;
+  color: #FFD15B;
   font-family: "Anton", sans-serif;
   font-weight: 400;
   text-align: center;
@@ -114,7 +113,7 @@ button {
   font-size: clamp(0.7rem, 2vw, 1.6rem);
 }
 .header_cta div input:focus {
-  outline: 2px solid #ffd15b;
+  outline: 2px solid #FFD15B;
 }
 @media screen and (max-width: 1160px) {
   .header_cta div input {
@@ -143,12 +142,10 @@ button {
     border-top-left-radius: unset;
   }
 }
-.header_cta div label:focus,
-.header_cta div label:hover {
-  background-color: #ffd15b;
+.header_cta div label:focus, .header_cta div label:hover {
+  background-color: #FFD15B;
 }
-.header_cta div label:focus::after,
-.header_cta div label:hover::after {
+.header_cta div label:focus::after, .header_cta div label:hover::after {
   color: #000;
 }
 .header_cta div label::after {
@@ -171,9 +168,8 @@ button {
   transform: translateY(-50%);
   background-color: #fff;
 }
-.header_cta div button:hover::after,
-.header_cta div button:focus::after {
-  color: #ffd15b;
+.header_cta div button:hover::after, .header_cta div button:focus::after {
+  color: #FFD15B;
 }
 @media screen and (max-width: 1160px) {
   .header_cta div button {
@@ -195,7 +191,7 @@ button {
 
 main {
   padding: 40px 80px 0;
-  background-color: #ededed;
+  background-color: #EDEDED;
 }
 @media screen and (max-width: 1160px) {
   main {
@@ -258,7 +254,7 @@ main .tag_section {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  margin-top: 20px;
+  margin: 20px 0;
 }
 @media screen and (max-width: 1160px) {
   main .tag_section {
@@ -283,7 +279,7 @@ main .tag_section {
   border-radius: 10px;
   font-size: 0.8rem;
   font-family: "Manrope", sans-serif;
-  background-color: #ffd15b;
+  background-color: #FFD15B;
 }
 .recipe-card img {
   width: 100%;
@@ -312,7 +308,7 @@ main .tag_section {
   border-radius: 10px;
 }
 .recipe-card_infos::-webkit-scrollbar-thumb:hover {
-  background-color: #ffd15b;
+  background-color: #FFD15B;
 }
 @media screen and (max-width: 500px) {
   .recipe-card_infos {
@@ -380,8 +376,7 @@ main .tag_section {
   color: #000;
   font-weight: 600;
 }
-.recipe-card_infos_ingredients ul li .quant-elm,
-.recipe-card_infos_ingredients ul li .unit-elm {
+.recipe-card_infos_ingredients ul li .quant-elm, .recipe-card_infos_ingredients ul li .unit-elm {
   color: #7a7a7a;
   font-weight: 400;
 }
@@ -411,9 +406,8 @@ main .tag_section {
   font-weight: 500;
   font-family: "Manrope", sans-serif;
 }
-.dropdown_btn:hover,
-.dropdown_btn:focus {
-  background-color: #ffd15b;
+.dropdown_btn:hover, .dropdown_btn:focus {
+  background-color: #FFD15B;
 }
 @media screen and (max-width: 1160px) {
   .dropdown_btn {
@@ -437,7 +431,7 @@ main .tag_section {
   border-radius: 10px;
 }
 .dropdown .dropdown_content::-webkit-scrollbar-thumb:hover {
-  background-color: #ffd15b;
+  background-color: #FFD15B;
 }
 .dropdown .dropdown_content div {
   position: relative;
@@ -461,9 +455,8 @@ main .tag_section {
   width: 15px;
   background-color: #fff;
 }
-.dropdown .dropdown_content div label:hover::after,
-.dropdown .dropdown_content div label:focus::after {
-  color: #ffd15b;
+.dropdown .dropdown_content div label:hover::after, .dropdown .dropdown_content div label:focus::after {
+  color: #FFD15B;
 }
 .dropdown .dropdown_content div label::after {
   content: "\f002";
@@ -489,9 +482,8 @@ main .tag_section {
   transform: translateY(-50%);
   background-color: #fff;
 }
-.dropdown .dropdown_content div button:hover::after,
-.dropdown .dropdown_content div button:focus::after {
-  color: #ffd15b;
+.dropdown .dropdown_content div button:hover::after, .dropdown .dropdown_content div button:focus::after {
+  color: #FFD15B;
 }
 .dropdown .dropdown_content div button::after {
   content: "\f00d";
@@ -513,9 +505,8 @@ main .tag_section {
 .dropdown .dropdown_content_list li:last-child {
   margin-bottom: 10px;
 }
-.dropdown .dropdown_content_list li:hover,
-.dropdown .dropdown_content_list li:focus {
-  background-color: #ffd15b;
+.dropdown .dropdown_content_list li:hover, .dropdown .dropdown_content_list li:focus {
+  background-color: #FFD15B;
 }
 @media screen and (max-width: 1160px) {
   .dropdown .dropdown_content_list li {
@@ -535,7 +526,7 @@ main .tag_section {
   border-radius: 10px;
   padding: 15px;
   font-family: "Manrope", sans-serif;
-  background-color: #ffd15b;
+  background-color: #FFD15B;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -554,10 +545,9 @@ main .tag_section {
 .tag button {
   position: relative;
   right: 0;
-  background-color: #ffd15b;
+  background-color: #FFD15B;
 }
-.tag button:hover::after,
-.tag button:focus::after {
+.tag button:hover::after, .tag button:focus::after {
   color: #fff;
 }
 .tag button::after {
