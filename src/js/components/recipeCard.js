@@ -17,7 +17,7 @@ export function displayRecipe(recipe, cardSection) {
               </p>`
         : ""
     }
-      <img src="./assets/images/recipes/${recipe.image}" alt="${recipe.name}">
+      <img src="./images/recipes/${recipe.image}" alt="${recipe.name}">
       <div class="recipe-card_infos">
         <h2>${recipe.name}</h2>
         <div class="recipe-card_infos_instructions">
