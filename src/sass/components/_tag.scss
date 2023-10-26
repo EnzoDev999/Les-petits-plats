@@ -1,0 +1,30 @@
+.tag{
+    //position: relative;
+    width: 190px;
+    height: 60px;
+    border-radius: 10px;
+    padding: 15px;
+    font-family: $texte-typo;
+    background-color: $primary-color;
+    //flex-direction, justify-content, align-items
+    @include flex(row, space-between, center);
+
+    @media screen and (max-width: 1160px) {
+        padding: 10px;
+        height: 50px;
+    }
+    h3{
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    button{
+        //position, right, background-color
+        @include button-delete(relative, 0, $primary-color);
+        
+        &::after {
+            //Unicode, font-size, color
+            @include font-awesome('\f00d', 1.2rem, $black-color);
+        }
+    }
+
+}

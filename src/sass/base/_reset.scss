@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: darken($grey-color, 20%);
+    background-color: lighten($white-color, 5%);
+  }
+  
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: darken($primary-color, 10%);
+}
+
+ul, ol {
+    list-style-type: none;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}

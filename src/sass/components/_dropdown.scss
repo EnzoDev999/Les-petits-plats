@@ -1,0 +1,128 @@
+.dropdown {
+    position: absolute;
+    width: 100%;
+    border-radius: 10px;
+    background-color: $white-color;
+    overflow: hidden;
+
+    @media screen and (max-width: 500px) {
+        box-shadow: 0 0 8px 0 rgba(0, 0, 0, .2);
+    }
+
+    &_btn {
+        padding: 15px;
+        //flex-direction, justify-content, align-items
+        @include flex(row, space-between, center);
+        height: 60px;
+        width: 100%;
+        background-color: $white-color;
+        font-size: 1.1rem;
+        font-weight: 500;
+        font-family: $texte-typo;
+        
+        &:hover,
+        &:focus {
+            background-color: $primary-color;
+        }
+
+        @media screen and (max-width: 1160px) {
+            padding: 10px;
+            height: 50px;
+        }
+    }
+
+    .dropdown_content {
+        overflow-y: scroll;
+        max-height: 0;
+        transition: max-height 0.1s ease-in-out;
+        @include scrollbar;
+
+        div {
+            position: relative;
+            margin: 10px 15px;
+
+            @media screen and (max-width: 1160px) {
+                margin: 5px 10px;
+            }
+
+            label {
+                //flex-direction, justify-content, align-items
+                @include flex(row, center, center);
+                position: absolute;
+                right: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 15px;
+                width: 15px;
+                background-color: $white-color;
+
+                &:hover::after,
+                &:focus::after{
+                    color: $primary-color;
+                }
+
+                &::after {
+                    //Unicode, font-size, color
+                    @include font-awesome('\f002', .9rem, $grey-color);
+                }
+            }
+
+            input {
+                width: 100%;
+                height: 30px;
+                border: 1px solid $grey-color;
+                outline: none;
+                padding-left: 5px;
+                font-family: $texte-typo;
+                background-color: $white-color;
+            }
+
+            button {
+                display: none;
+                //position, right, background-color;
+                @include button-delete(absolute, 25px, $white-color);
+
+                &::after {
+                    //Unicode, font-size, color
+                    @include font-awesome('\f00d', .9rem, $grey-color);
+                }
+            }
+        }
+
+        &_list {
+
+            &_selectedElem {
+                background-color: yellow;
+            }
+
+            li {
+                padding: 5px 5px 5px 15px;
+                font-size: 1rem;
+                font-family: $texte-typo;
+                outline: none;
+                cursor: pointer;
+                
+                &:last-child {
+                    margin-bottom: 10px;
+                }
+
+                &:hover,
+                &:focus {
+                    background-color: $primary-color;
+                }
+
+                @media screen and (max-width: 1160px) {
+                    padding: 5px 5px 5px 10px;
+                }
+            }
+        }
+    }
+
+    .active {
+        max-height: 250px;
+    }
+
+    .rotate{
+        transform: rotate(180deg);
+    }
+}

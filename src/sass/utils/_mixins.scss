@@ -1,0 +1,64 @@
+@mixin fontSize($size) {
+    font-size: #{$size}px;
+};
+
+
+
+@mixin flex($direction, $justify: null, $align: null) {
+    display: flex;
+    flex-direction: $direction;
+    
+    @if $justify {
+        justify-content: $justify;
+    };
+    
+    @if $align {
+        align-items: $align;
+    };
+};
+
+@mixin font-awesome($unicode, $size, $color) {
+    content: $unicode;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 600;
+    font-size: $size;
+    color: $color;
+};
+
+@mixin button-delete($position, $right, $color-bg){
+    position: $position;
+    right: $right;
+    @if($position == absolute){
+        top: 50%;
+        transform: translateY(-50%);
+    };
+    background-color: $color-bg;
+
+    &:hover::after,
+    &:focus::after{
+        @if $color-bg == $white-color {
+            color: $primary-color;
+        } @else {
+            color: $white-color;
+        };
+    }
+};
+
+@mixin scrollbar{
+    &::-webkit-scrollbar {
+        width: 10px;
+    };
+
+    &::-webkit-scrollbar-track {
+        background-color: $white-color;
+    };
+
+    &::-webkit-scrollbar-thumb {
+        background-color: $grey-color;
+        border-radius: 10px ;
+    };
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: $primary-color;
+    };
+};

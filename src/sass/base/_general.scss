@@ -1,0 +1,17 @@
+
+//le main
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: $light-grey-color;
+}
+
+//grid de nos card
+
+.card_section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(351px, 1fr));
+    gap: 48px; 
+  }
+  
