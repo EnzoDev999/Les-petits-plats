@@ -91,16 +91,13 @@
 
         &_list {
 
-            &_selectedElem {
-                background-color: yellow;
-            }
-
             li {
                 padding: 5px 5px 5px 15px;
-                font-size: 1rem;
+                font-size: 14px;
                 font-family: $texte-typo;
                 outline: none;
                 cursor: pointer;
+                position: relative;
                 
                 &:last-child {
                     margin-bottom: 10px;
@@ -115,6 +112,22 @@
                     padding: 5px 5px 5px 10px;
                 }
             }
+
+            &_selectTag {
+                background-color: $primary-color;
+
+                button {
+                    display: none;
+                    //position, right, background-color;
+                    @include button-delete(absolute, 15px, $primary-color);
+    
+                    &::after {
+                        //Unicode, font-size, color
+                        @include font-awesome('\f00d', 1rem, $grey-color);
+                    }
+                }
+            }
+
         }
     }
 

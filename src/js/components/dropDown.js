@@ -10,21 +10,34 @@ function updateDropdownList(category) {
   );
   const filteredItems = getFilteredItems(category);
 
-  dropdownList.innerHTML = ""; // Effacer les éléments précédents
+  // Création d'une liste des éléments actuels
+  const currentItems = Array.from(dropdownList.querySelectorAll("li")).map(
+    (li) => li.innerText
+  );
+
+  // Ajout des éléments manquants
   filteredItems.forEach((item) => {
-    const li = document.createElement("li");
-    li.innerText = item;
-    li.setAttribute("tabindex", "0"); // Ajoutez cette ligne
-    dropdownList.appendChild(li);
+    if (!currentItems.includes(item)) {
+      const li = document.createElement("li");
+      li.innerText = item;
+      li.setAttribute("tabindex", "0");
+      dropdownList.appendChild(li);
+    }
   });
 
-  // Après avoir construit la liste, vérifiez si un élément a été sélectionné
+  // Suppression des éléments non présents dans filteredItems
+  dropdownList.querySelectorAll("li").forEach((li) => {
+    if (!filteredItems.includes(li.innerText)) {
+      li.remove();
+    }
+  });
+
+  // Si un élément a été sélectionné, le déplacer en haut de la liste
   if (selectedElementValue) {
     const selectedItem = Array.from(dropdownList.querySelectorAll("li")).find(
       (li) => li.innerText === selectedElementValue
     );
     if (selectedItem) {
-      selectedItem.remove();
       dropdownList.prepend(selectedItem);
     }
   }
@@ -159,7 +172,7 @@ export function createDropdown() {
 
     dropdownList.addEventListener("click", (e) => {
       if (e.target.tagName === "LI") {
-        selectedElementValue = e.target.innerText; // Enregistrez la valeur
+        selectedElementValue = e.target.innerText; // Enregistre la valeur
         const selectedItem = e.target.innerText;
         const category = dropdownList.dataset.category;
 
@@ -168,6 +181,13 @@ export function createDropdown() {
         items.forEach((item) => {
           item.style.display = "";
         });
+
+        e.target.classList.add("dropdown_content_list_selectTag"); // Ajoute la classe
+
+        const removeLiBtn = document.createElement("button");
+        removeLiBtn.setAttribute("tabindex", "0");
+        removeLiBtn.style.display = "block";
+        e.target.appendChild(removeLiBtn);
 
         e.target.remove(); // Supprime l'élément sélectionné de sa position actuelle
         dropdownList.prepend(e.target); // Ajoute l'élément sélectionné au début de la liste

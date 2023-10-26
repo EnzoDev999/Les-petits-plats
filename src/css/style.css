@@ -492,15 +492,13 @@ main .tag_section {
   font-size: 0.9rem;
   color: #7a7a7a;
 }
-.dropdown .dropdown_content_list_selectedElem {
-  background-color: yellow;
-}
 .dropdown .dropdown_content_list li {
   padding: 5px 5px 5px 15px;
-  font-size: 1rem;
+  font-size: 14px;
   font-family: "Manrope", sans-serif;
   outline: none;
   cursor: pointer;
+  position: relative;
 }
 .dropdown .dropdown_content_list li:last-child {
   margin-bottom: 10px;
@@ -512,6 +510,27 @@ main .tag_section {
   .dropdown .dropdown_content_list li {
     padding: 5px 5px 5px 10px;
   }
+}
+.dropdown .dropdown_content_list_selectTag {
+  background-color: #FFD15B;
+}
+.dropdown .dropdown_content_list_selectTag button {
+  display: none;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #FFD15B;
+}
+.dropdown .dropdown_content_list_selectTag button:hover::after, .dropdown .dropdown_content_list_selectTag button:focus::after {
+  color: #fff;
+}
+.dropdown .dropdown_content_list_selectTag button::after {
+  content: "\f00d";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 600;
+  font-size: 1rem;
+  color: #7a7a7a;
 }
 .dropdown .active {
   max-height: 250px;

@@ -14,7 +14,15 @@ function updateRecipeDisplay() {
 }
 
 function createTag(category, item) {
-  const tagContainer = document.querySelector(".tag_section"); // supposez que vous avez une div avec la classe "tag-section" pour contenir les tags
+  const tagContainer = document.querySelector(".tag_section");
+
+  // Vérification si le tag existe déjà
+  const existingTag = Array.from(tagContainer.querySelectorAll(".tag")).find(
+    (tag) => tag.innerText.includes(item)
+  );
+  if (existingTag) {
+    return; // Si le tag existe, sortez de la fonction sans rien faire
+  }
 
   const tag = document.createElement("div");
   tag.classList.add("tag");
@@ -53,6 +61,20 @@ function removeTag(tagElement, category, item) {
   updateDropdownList("ingredients");
   updateDropdownList("ustensiles");
   updateDropdownList("appareils");
+
+  // Supprimez la classe de l'élément correspondant dans la liste déroulante
+  const dropdownList = document.querySelector(
+    `.dropdown_content_list[data-category="${category}"]`
+  );
+  const li = Array.from(dropdownList.querySelectorAll("li")).find(
+    (li) => li.innerText.toLowerCase() === item.toLowerCase()
+  );
+  if (li) {
+    li.classList.remove("dropdown_content_list_selectTag");
+    if (li.classList.length === 0) {
+      li.removeAttribute("class");
+    }
+  }
 
   // Remettre les éléments dans leur position initiale après la mise à jour
   sortDropdownList("ingredients");
