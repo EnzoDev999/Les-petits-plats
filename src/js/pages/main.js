@@ -1,9 +1,8 @@
-// Fichier main.js
 import data from "../data/recipes.js";
 import { createDropdown } from "../components/dropDown.js";
 import { displayRecipe } from "../components/recipeCard.js";
 import { openCloseDropdown } from "../utils/dropdownEvent.js";
-import { updateRecipesWithFilter } from "../utils/recipeFilter.js";
+import { updateRecipeCount } from "../utils/recipeCountUpdater.js";
 
 const recipes = data.recipes;
 
@@ -12,6 +11,9 @@ let activeFilters = {
   appareils: [],
   ustensiles: [],
 };
+
+const recipesCountElement = document.createElement("p");
+recipesCountElement.classList.add("recipes_count");
 
 document.addEventListener("DOMContentLoaded", function () {
   const cardSection = document.querySelector(".card_section");
@@ -26,14 +28,12 @@ document.addEventListener("DOMContentLoaded", function () {
     displayRecipe(recipe, cardSection);
   }
 
-  const recipesCountElement = document.createElement("p");
-  recipesCountElement.classList.add(".recipes_count");
-
   filterSection.appendChild(recipesCountElement);
-  // Mise à jour du nombre de recettes
-  recipesCountElement.textContent = `${recipes.length} recettes`;
+
+  // Mettez à jour le compteur de recettes lors de l'initialisation
+  updateRecipeCount(recipes, recipesCountElement);
 
   openCloseDropdown();
 });
 
-export { activeFilters };
+export { activeFilters, recipesCountElement };

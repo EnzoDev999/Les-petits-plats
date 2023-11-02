@@ -2,6 +2,8 @@ import { activeFilters } from "../pages/main.js";
 import { getFilteredRecipes } from "../utils/recipeFilter.js";
 import { displayRecipe } from "./recipeCard.js";
 import { updateDropdownList } from "./dropDown.js";
+import { updateRecipeCount } from "../utils/recipeCountUpdater.js";
+import { recipesCountElement } from "../pages/main.js";
 
 function updateRecipeDisplay() {
   const cardSection = document.querySelector(".card_section");
@@ -11,6 +13,11 @@ function updateRecipeDisplay() {
   filteredRecipes.forEach((recipe) => {
     displayRecipe(recipe, cardSection);
   });
+
+  // Mise à jour du nombre de recettes
+  if (recipesCountElement) {
+    updateRecipeCount(filteredRecipes, recipesCountElement);
+  }
 }
 
 function createTag(category, item) {
@@ -21,7 +28,7 @@ function createTag(category, item) {
     (tag) => tag.innerText.includes(item)
   );
   if (existingTag) {
-    return; // Si le tag existe, sortez de la fonction sans rien faire
+    return; // Si le tag existe, sort de la fonction sans rien faire
   }
 
   const tag = document.createElement("div");
@@ -40,6 +47,7 @@ function createTag(category, item) {
   });
 }
 
+//trie de mes dropDown
 function sortDropdownList(category) {
   const dropdownList = document.querySelector(
     `.dropdown_content_list[data-category="${category}"]`
@@ -52,9 +60,21 @@ function sortDropdownList(category) {
 function removeTag(tagElement, category, item) {
   const index = activeFilters[category].indexOf(item.toLowerCase());
   if (index > -1) {
-    activeFilters[category].splice(index, 1);
+    // ici .filter va créer un tableau contenant tous les éléments SAUF celui qu'on décide de supprimer (qu'il soit seul ou dupliqué en cliquant dessus plusieurs fois)
+    activeFilters[category] = activeFilters[category].filter(
+      (filterItem) => filterItem !== item.toLowerCase()
+    );
   }
-  tagElement.remove();
+  // Suppression de la div avec la classe 'tag'
+  const tagContainer = document.querySelector(".tag_section");
+  const tagDiv = Array.from(tagContainer.querySelectorAll(".tag")).find((tag) =>
+    tag.innerText.includes(item)
+  );
+
+  if (tagDiv) {
+    tagDiv.remove();
+  }
+
   updateRecipeDisplay();
 
   // Mettre à jour toutes les listes déroulantes
@@ -62,7 +82,7 @@ function removeTag(tagElement, category, item) {
   updateDropdownList("ustensiles");
   updateDropdownList("appareils");
 
-  // Supprimez la classe de l'élément correspondant dans la liste déroulante
+  // Supprim la classe de l'élément correspondant dans la liste déroulante
   const dropdownList = document.querySelector(
     `.dropdown_content_list[data-category="${category}"]`
   );
@@ -83,3 +103,4 @@ function removeTag(tagElement, category, item) {
 }
 
 export { createTag };
+export { removeTag };

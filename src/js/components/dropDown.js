@@ -130,7 +130,7 @@ export function createDropdown() {
     data[category].forEach((item) => {
       const li = document.createElement("li");
       li.innerText = item;
-      li.setAttribute("tabindex", "0"); // Ajoutez cette ligne
+      li.setAttribute("tabindex", "0");
       dropdownList.appendChild(li);
     });
 

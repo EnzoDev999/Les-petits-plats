@@ -1,10 +1,8 @@
-// Fichier recipeCard.js
-
 export function displayRecipe(recipe, cardSection) {
   const recipeCard = document.createElement("div");
   recipeCard.classList.add("recipe-card");
 
-  // Ajoutez les détails de votre recette ici, par exemple:
+  // Ajout les détails des recette ici
   recipeCard.innerHTML = `
     ${
       recipe.time > 0

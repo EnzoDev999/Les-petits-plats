@@ -2,11 +2,12 @@ import { activeFilters } from "../pages/main.js";
 import data from "../data/recipes.js";
 import { displayRecipe } from "../components/recipeCard.js";
 import { updateDropdownList } from "../components/dropDown.js";
+import { updateRecipeCount } from "../utils/recipeCountUpdater.js";
 
 const recipes = data.recipes;
 
 export function updateRecipesWithFilter(category, filterValue) {
-  // Mettez à jour l'objet activeFilters avec la nouvelle valeur de filtre
+  // Met à jour l'objet activeFilters avec la nouvelle valeur de filtre
   if (filterValue) {
     activeFilters[category].push(filterValue.toLowerCase());
   }
@@ -21,7 +22,11 @@ export function updateRecipesWithFilter(category, filterValue) {
     displayRecipe(recipe, cardSection);
   });
 
-  // Mettez à jour les menus déroulants après la mise à jour des recettes
+  // Mise à jour du compteur de recettes
+  const recipesCountElement = document.querySelector(".recipes_count");
+  updateRecipeCount(filteredRecipes, recipesCountElement);
+
+  // Met à jour les menus déroulants après la mise à jour des recettes
   ["ingredients", "appareils", "ustensiles"].forEach(updateDropdownList);
 }
 
