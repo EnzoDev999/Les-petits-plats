@@ -34,6 +34,7 @@ function createTag(category, item) {
   const tag = document.createElement("div");
   tag.classList.add("tag");
   tag.innerText = item;
+  tag.setAttribute("data-item", item.toLowerCase());
 
   const closeBtn = document.createElement("span");
   closeBtn.classList.add("tag-close");
@@ -47,59 +48,116 @@ function createTag(category, item) {
   });
 }
 
-//trie de mes dropDown
+//trie de mes dropDown (permet de retrier mes listes au complet)
 function sortDropdownList(category) {
   const dropdownList = document.querySelector(
     `.dropdown_content_list[data-category="${category}"]`
   );
-  const items = Array.from(dropdownList.querySelectorAll("li"));
-  items.sort((a, b) => a.innerText.localeCompare(b.innerText));
-  items.forEach((item) => dropdownList.appendChild(item));
+
+  // Séparer les éléments sélectionnés et non sélectionnés
+  const selectedItems = Array.from(
+    dropdownList.querySelectorAll(".dropdown_content_list_selectTag")
+  );
+  const nonSelectedItems = Array.from(
+    dropdownList.querySelectorAll("li:not(.dropdown_content_list_selectTag)")
+  );
+
+  // Trier uniquement les éléments non sélectionnés
+  nonSelectedItems.sort((a, b) => a.innerText.localeCompare(b.innerText));
+
+  // Vider la liste et remettre d'abord les éléments sélectionnés, puis les non sélectionnés triés
+  dropdownList.innerHTML = "";
+  selectedItems.forEach((item) => dropdownList.appendChild(item));
+  nonSelectedItems.forEach((item) => dropdownList.appendChild(item));
 }
 
-function removeTag(tagElement, category, item) {
-  const index = activeFilters[category].indexOf(item.toLowerCase());
+function removeTag(element, category, itemText) {
+  let item = itemText.toLowerCase();
+
+  // Supprimer l'élément de la liste activeFilters si c'est un grand tag ou un li
+  const index = activeFilters[category].indexOf(item);
   if (index > -1) {
     // ici .filter va créer un tableau contenant tous les éléments SAUF celui qu'on décide de supprimer (qu'il soit seul ou dupliqué en cliquant dessus plusieurs fois)
     activeFilters[category] = activeFilters[category].filter(
       (filterItem) => filterItem !== item.toLowerCase()
     );
   }
-  // Suppression de la div avec la classe 'tag'
-  const tagContainer = document.querySelector(".tag_section");
-  const tagDiv = Array.from(tagContainer.querySelectorAll(".tag")).find((tag) =>
-    tag.innerText.includes(item)
-  );
 
-  if (tagDiv) {
-    tagDiv.remove();
-  }
-
-  updateRecipeDisplay();
-
-  // Mettre à jour toutes les listes déroulantes
-  updateDropdownList("ingredients");
-  updateDropdownList("ustensiles");
-  updateDropdownList("appareils");
-
-  // Supprim la classe de l'élément correspondant dans la liste déroulante
-  const dropdownList = document.querySelector(
-    `.dropdown_content_list[data-category="${category}"]`
-  );
-  const li = Array.from(dropdownList.querySelectorAll("li")).find(
-    (li) => li.innerText.toLowerCase() === item.toLowerCase()
-  );
-  if (li) {
-    li.classList.remove("dropdown_content_list_selectTag");
-    if (li.classList.length === 0) {
-      li.removeAttribute("class");
+  // Suppression visuelle du tag de l'interface utilisateur
+  if (element.classList.contains("tag")) {
+    // Suppression du grand tag
+    element.remove();
+    // Trouver et supprimer le tag correspondant dans la liste déroulante si présent
+    const dropdownItem = document.querySelector(
+      `.dropdown_content_list[data-category="${category}"] li[data-item="${item}"]`
+    );
+    if (dropdownItem) {
+      dropdownItem.classList.remove("dropdown_content_list_selectTag");
+      // Si le tag dans le dropdown a un bouton de suppression, retirez-le
+      const removeBtn = dropdownItem.querySelector(".li-remove-btn");
+      if (removeBtn) {
+        dropdownItem.removeChild(removeBtn);
+      }
+    }
+  } else if (element.tagName === "LI") {
+    // Suppression du tag de la liste déroulante
+    element.classList.remove("dropdown_content_list_selectTag");
+    // Supprimer la petite croix du li
+    const removeBtn = element.querySelector(".li-remove-btn");
+    if (removeBtn) {
+      removeBtn.removeEventListener("click", removeTagListener); // Assurez-vous de désinscrire l'écouteur d'événements
+      element.removeChild(removeBtn);
+    }
+    // Trouver et supprimer le grand tag correspondant si présent
+    const tagElement = document.querySelector(`.tag[data-item="${item}"]`);
+    if (tagElement) {
+      tagElement.remove();
     }
   }
 
-  // Remettre les éléments dans leur position initiale après la mise à jour
-  sortDropdownList("ingredients");
-  sortDropdownList("ustensiles");
-  sortDropdownList("appareils");
+  // Mise à jour de l'affichage des recettes et des listes déroulantes
+  updateRecipeDisplay();
+  refreshDropdownsAndMaintainOrder("ingredients");
+  refreshDropdownsAndMaintainOrder("appareils");
+  refreshDropdownsAndMaintainOrder("ustensiles");
+}
+
+// Fonction d'écouteur pour la suppression à partir de la petite croix dans le dropdown
+function removeTagListener(event) {
+  const li = event.target.parentElement;
+  const category = li
+    .closest(".dropdown_content_list")
+    .getAttribute("data-category");
+  const itemName = li.textContent.trim();
+  removeTag(li, category, itemName);
+}
+
+function refreshDropdownsAndMaintainOrder(category) {
+  // Obtiens tous les éléments de la liste déroulante actuelle avec la classe 'dropdown_content_list_selectTag'
+  const dropdownList = document.querySelector(
+    `.dropdown_content_list[data-category="${category}"]`
+  );
+  // Sauvegarde les éléments sélectionnés dans un tableau pour les remettre plus tard
+  let selectedItemsArray = Array.from(
+    dropdownList.querySelectorAll(".dropdown_content_list_selectTag")
+  ).map((li) => li.innerText);
+
+  // Mettre à jour la liste déroulante maintenant
+  updateDropdownList(category);
+
+  // Trie la liste avec les éléments non sélectionnés restants après la mise à jour
+  sortDropdownList(category); // on s'assure que cette ligne est après l'appel à updateDropdownList pour maintenir l'ordre
+
+  // Remet les éléments sélectionnés au-dessus en conservant leur classe
+  selectedItemsArray.forEach((selectedItemText) => {
+    const itemToMoveUp = Array.from(dropdownList.querySelectorAll("li")).find(
+      (li) => li.innerText === selectedItemText
+    );
+    if (itemToMoveUp) {
+      itemToMoveUp.classList.add("dropdown_content_list_selectTag");
+      dropdownList.prepend(itemToMoveUp); // Remet l'élément en haut de la liste
+    }
+  });
 }
 
 export { createTag };

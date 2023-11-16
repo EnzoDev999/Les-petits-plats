@@ -2,6 +2,9 @@ import recipesData from "../data/recipes.js";
 import { updateRecipesWithFilter } from "../utils/recipeFilter.js";
 import { getFilteredRecipes } from "../utils/recipeFilter.js";
 import { createTag } from "./tag.js";
+import { removeTag } from "./tag.js";
+
+let selectedElementValue; // Pour enregistrer la valeur de l'élément sélectionné
 
 // === Nouvelles fonctions pour la mise à jour du dropdown ===
 function updateDropdownList(category) {
@@ -63,8 +66,6 @@ function getFilteredItems(category) {
 
   return Array.from(allItems).sort((a, b) => a.localeCompare(b));
 }
-
-let selectedElementValue; // Pour enregistrer la valeur de l'élément sélectionné
 
 export function createDropdown() {
   const dropdownContainer = document.createElement("div");
@@ -185,8 +186,13 @@ export function createDropdown() {
         e.target.classList.add("dropdown_content_list_selectTag"); // Ajoute la classe
 
         const removeLiBtn = document.createElement("button");
-        removeLiBtn.setAttribute("tabindex", "0");
+        removeLiBtn.classList.add("li-remove-btn");
         removeLiBtn.style.display = "block";
+
+        removeLiBtn.addEventListener("click", function (event) {
+          event.stopPropagation(); // Empêche le clic de s'appliquer également à l'élément li
+          removeTag(event.target.parentElement, category, selectedItem);
+        });
         e.target.appendChild(removeLiBtn);
 
         e.target.remove(); // Supprime l'élément sélectionné de sa position actuelle
