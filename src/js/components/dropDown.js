@@ -24,6 +24,7 @@ function updateDropdownList(category) {
       const li = document.createElement("li");
       li.innerText = item;
       li.setAttribute("tabindex", "0");
+      li.setAttribute("data-item", item.toLowerCase());
       dropdownList.appendChild(li);
     }
   });
@@ -132,6 +133,7 @@ export function createDropdown() {
       const li = document.createElement("li");
       li.innerText = item;
       li.setAttribute("tabindex", "0");
+      li.setAttribute("data-item", item.toLowerCase());
       dropdownList.appendChild(li);
     });
 
@@ -174,7 +176,7 @@ export function createDropdown() {
     dropdownList.addEventListener("click", (e) => {
       if (e.target.tagName === "LI") {
         selectedElementValue = e.target.innerText; // Enregistre la valeur
-        const selectedItem = e.target.innerText;
+        const selectedItem = e.target.innerText.toLowerCase();
         const category = dropdownList.dataset.category;
 
         // Montre tous les éléments
@@ -184,6 +186,7 @@ export function createDropdown() {
         });
 
         e.target.classList.add("dropdown_content_list_selectTag"); // Ajoute la classe
+        e.target.setAttribute("data-item", selectedItem); // Ajouter cette ligne
 
         const removeLiBtn = document.createElement("button");
         removeLiBtn.classList.add("li-remove-btn");

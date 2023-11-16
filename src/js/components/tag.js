@@ -72,7 +72,7 @@ function sortDropdownList(category) {
 }
 
 function removeTag(element, category, itemText) {
-  let item = itemText.toLowerCase();
+  let item = itemText.trim().toLowerCase();
 
   // Supprimer l'élément de la liste activeFilters si c'est un grand tag ou un li
   const index = activeFilters[category].indexOf(item);
@@ -87,10 +87,13 @@ function removeTag(element, category, itemText) {
   if (element.classList.contains("tag")) {
     // Suppression du grand tag
     element.remove();
-    // Trouver et supprimer le tag correspondant dans la liste déroulante si présent
-    const dropdownItem = document.querySelector(
-      `.dropdown_content_list[data-category="${category}"] li[data-item="${item}"]`
-    );
+    // Trouver et supprimer le tag correspondant dans la liste déroulante
+    const dropdownItemSelector = `.dropdown_content_list[data-category="${category}"] li[data-item="${item}"]`;
+    const dropdownItem = document.querySelector(dropdownItemSelector);
+    console.log("Élément trouvé:", dropdownItem); // Ceci affichera l'élément trouvé ou `null` si aucun élément n'est trouvé
+
+    console.log(`Recherche de l'élément: ${dropdownItemSelector}`); // Log pour débogage
+
     if (dropdownItem) {
       dropdownItem.classList.remove("dropdown_content_list_selectTag");
       // Si le tag dans le dropdown a un bouton de suppression, retirez-le
