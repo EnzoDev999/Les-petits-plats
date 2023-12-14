@@ -3,8 +3,9 @@ import { createDropdown } from "../components/dropDown.js";
 import { displayRecipe } from "../components/recipeCard.js";
 import { openCloseDropdown } from "../utils/dropdownEvent.js";
 import { updateRecipeCount } from "../utils/recipeCountUpdater.js";
+import "../components/mainSearchBar.js";
 
-const recipes = data.recipes;
+export const recipes = data.recipes;
 
 let activeFilters = {
   ingredients: [],
@@ -31,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
   filterSection.appendChild(recipesCountElement);
 
   // Mettez à jour le compteur de recettes lors de l'initialisation
-  updateRecipeCount(recipes, recipesCountElement);
+  updateRecipeCount(recipes.length, recipesCountElement);
 
   openCloseDropdown();
 });

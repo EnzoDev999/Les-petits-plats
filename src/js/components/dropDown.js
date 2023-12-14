@@ -2,44 +2,69 @@ import recipesData from "../data/recipes.js";
 import { updateRecipesWithFilter } from "../utils/recipeFilter.js";
 import { getFilteredRecipes } from "../utils/recipeFilter.js";
 import { createTag } from "./tag.js";
-import { removeTag } from "./tag.js";
 
 let selectedElementValue; // Pour enregistrer la valeur de l'élément sélectionné
 
+// Assurez-vous que cette fonction est exportée si elle est utilisée en dehors de ce fichier
+export function refreshDropdowns(filteredRecipes) {
+  // S'il n'y a pas de recettes filtrées fournies, utilisez toutes les recettes
+  if (!filteredRecipes) {
+    filteredRecipes = getFilteredRecipes();
+  }
+
+  // Assurez-vous que filteredRecipes est un tableau
+  if (!Array.isArray(filteredRecipes)) {
+    console.error("filteredRecipes doit être un tableau");
+    return; // Sortie anticipée si filteredRecipes n'est pas un tableau
+  }
+
+  // Utilisez filteredRecipes pour mettre à jour les dropdowns
+  const filteredIngredients = getFilteredItems("ingredients", filteredRecipes);
+  const filteredAppareils = getFilteredItems("appareils", filteredRecipes);
+  const filteredUstensils = getFilteredItems("ustensiles", filteredRecipes);
+
+  // Mettre à jour les listes déroulantes avec les éléments filtrés
+  updateDropdownList("ingredients", filteredIngredients);
+  updateDropdownList("appareils", filteredAppareils);
+  updateDropdownList("ustensiles", filteredUstensils);
+}
+
 // === Nouvelles fonctions pour la mise à jour du dropdown ===
-function updateDropdownList(category) {
+function updateDropdownList(category, filteredItems = null) {
   const dropdownList = document.querySelector(
     `.dropdown_content_list[data-category="${category}"]`
   );
-  const filteredItems = getFilteredItems(category);
+  const filteredRecipes = getFilteredRecipes();
 
-  // Création d'une liste des éléments actuels
-  const currentItems = Array.from(dropdownList.querySelectorAll("li")).map(
-    (li) => li.innerText
-  );
+  let itemsToUpdate =
+    filteredItems || getFilteredItems(category, filteredRecipes);
 
-  // Ajout des éléments manquants
-  filteredItems.forEach((item) => {
-    if (!currentItems.includes(item)) {
-      const li = document.createElement("li");
-      li.innerText = item;
-      li.setAttribute("tabindex", "0");
-      li.setAttribute("data-item", item.toLowerCase());
-      dropdownList.appendChild(li);
-    }
+  // Assurez-vous que itemsToUpdate est un tableau.
+  if (!itemsToUpdate) {
+    console.error(`itemsToUpdate est indéfini pour la catégorie: ${category}`);
+    itemsToUpdate = []; // Initialiser à un tableau vide pour éviter des erreurs ultérieures
+  } else if (!Array.isArray(itemsToUpdate)) {
+    console.error(`itemsToUpdate doit être un tableau, reçu:`, itemsToUpdate);
+    itemsToUpdate = []; // Initialiser à un tableau vide pour éviter des erreurs ultérieures
+  }
+
+  // Ce log doit montrer les éléments qui seront ajoutés au dropdown après le filtrage.
+
+  // Vider la liste actuelle
+  dropdownList.innerHTML = "";
+  // Ajout ou mise à jour des éléments
+  itemsToUpdate.forEach((item) => {
+    const li = document.createElement("li");
+    li.innerText = item;
+    li.setAttribute("tabindex", "0");
+    li.setAttribute("data-item", item.toLowerCase());
+    dropdownList.appendChild(li);
   });
 
-  // Suppression des éléments non présents dans filteredItems
-  dropdownList.querySelectorAll("li").forEach((li) => {
-    if (!filteredItems.includes(li.innerText)) {
-      li.remove();
-    }
-  });
-
-  // Si un élément a été sélectionné, le déplacer en haut de la liste
+  // Si un élément a été sélectionné précédemment, remettez-le en haut
   if (selectedElementValue) {
-    const selectedItem = Array.from(dropdownList.querySelectorAll("li")).find(
-      (li) => li.innerText === selectedElementValue
+    const selectedItem = dropdownList.querySelector(
+      `li[data-item="${selectedElementValue.toLowerCase()}"]`
     );
     if (selectedItem) {
       dropdownList.prepend(selectedItem);
@@ -47,24 +72,63 @@ function updateDropdownList(category) {
   }
 }
 
-function getFilteredItems(category) {
-  const allItems = new Set();
-  const filteredRecipes = getFilteredRecipes(); // Une fonction de recipeFilter.js
+export function getFilteredItems(category, filteredRecipes, searchText = "") {
+  console.log(
+    `Début de getFilteredItems avec la catégorie: ${category}`,
+    filteredRecipes
+  );
 
+  // Vérifier que filteredRecipes est bien un tableau
+  if (!Array.isArray(filteredRecipes)) {
+    console.error("filteredRecipes doit être un tableau dans getFilteredItems");
+    return [];
+  }
+
+  const allItems = new Set();
+
+  // Parcourir les recettes filtrées
   filteredRecipes.forEach((recipe) => {
+    console.log(`Traitement de la recette:`, recipe); // Afficher la recette en cours de traitement
+
     switch (category) {
       case "ingredients":
-        recipe.ingredients.forEach((ing) => allItems.add(ing.ingredient));
+        recipe.ingredients.forEach((ing) => {
+          console.log(`Traitement de l'ingrédient:`, ing); // Afficher l'ingrédient en cours de traitement
+          if (
+            !searchText ||
+            ing.ingredient.toLowerCase().includes(searchText.toLowerCase())
+          ) {
+            allItems.add(ing.ingredient); // Ajouter l'ingrédient si il correspond au critère de recherche
+          }
+        });
         break;
       case "appareils":
-        allItems.add(recipe.appliance);
+        console.log(`Traitement de l'appareil:`, recipe.appliance); // Afficher l'appareil en cours de traitement
+        if (
+          !searchText ||
+          recipe.appliance.toLowerCase().includes(searchText.toLowerCase())
+        ) {
+          allItems.add(recipe.appliance); // Ajouter l'appareil si il correspond au critère de recherche
+        }
         break;
       case "ustensiles":
-        recipe.ustensils.forEach((ust) => allItems.add(ust));
+        recipe.ustensiles.forEach((ust) => {
+          console.log(`Traitement de l'ustensile:`, ust); // Afficher l'ustensile en cours de traitement
+          if (
+            !searchText ||
+            ust.ustensil.toLowerCase().includes(searchText.toLowerCase())
+          ) {
+            allItems.add(ust); // Ajouter l'ustensile si il correspond au critère de recherche
+          }
+        });
         break;
     }
   });
 
+  console.log(
+    `Éléments trouvés pour la catégorie ${category}:`,
+    Array.from(allItems)
+  );
   return Array.from(allItems).sort((a, b) => a.localeCompare(b));
 }
 
@@ -79,7 +143,7 @@ export function createDropdown() {
   recipesData.recipes.forEach((recipe) => {
     recipe.ingredients.forEach((ing) => ingredients.add(ing.ingredient));
     appareils.add(recipe.appliance);
-    recipe.ustensils.forEach((ust) => ustensiles.add(ust));
+    recipe.ustensiles.forEach((ust) => ustensiles.add(ust));
   });
 
   const data = {
@@ -164,6 +228,7 @@ export function createDropdown() {
       });
     });
 
+    // Croix dans la petite barre de recherche de nos dropdowns
     buttonElement.addEventListener("click", () => {
       inputElement.value = ""; // Efface le champ de recherche
       buttonElement.style.display = "none"; // Cache l'icône de croix
@@ -175,34 +240,31 @@ export function createDropdown() {
 
     dropdownList.addEventListener("click", (e) => {
       if (e.target.tagName === "LI") {
-        selectedElementValue = e.target.innerText; // Enregistre la valeur
+        selectedElementValue = e.target.innerText;
         const selectedItem = e.target.innerText.toLowerCase();
         const category = dropdownList.dataset.category;
 
-        // Montre tous les éléments
-        const items = dropdownList.querySelectorAll("li");
-        items.forEach((item) => {
-          item.style.display = "";
-        });
+        // Sauvegarder l'élément sélectionné
+        const selectedItemRef = { category, value: selectedItem };
 
-        e.target.classList.add("dropdown_content_list_selectTag"); // Ajoute la classe
-        e.target.setAttribute("data-item", selectedItem); // Ajouter cette ligne
-
-        const removeLiBtn = document.createElement("button");
-        removeLiBtn.classList.add("li-remove-btn");
-        removeLiBtn.style.display = "block";
-
-        removeLiBtn.addEventListener("click", function (event) {
-          event.stopPropagation(); // Empêche le clic de s'appliquer également à l'élément li
-          removeTag(event.target.parentElement, category, selectedItem);
-        });
-        e.target.appendChild(removeLiBtn);
-
-        e.target.remove(); // Supprime l'élément sélectionné de sa position actuelle
-        dropdownList.prepend(e.target); // Ajoute l'élément sélectionné au début de la liste
-
-        createTag(category, selectedItem); // Création du tag
+        createTag(category, selectedItem);
         updateRecipesWithFilter(category, selectedItem);
+
+        // Appeler refreshDropdowns, qui réinitialisera les éléments
+        refreshDropdowns();
+
+        // Réappliquer la classe focused après la mise à jour
+        setTimeout(() => {
+          const updatedDropdownList = document.querySelector(
+            `.dropdown_content_list[data-category="${category}"]`
+          );
+          const liToFocus = Array.from(
+            updatedDropdownList.querySelectorAll("li")
+          ).find((li) => li.innerText.toLowerCase() === selectedItemRef.value);
+          if (liToFocus) {
+            liToFocus.classList.add("focused");
+          }
+        }, 100);
       }
     });
   }

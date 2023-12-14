@@ -1,4 +1,3 @@
-export function updateRecipeCount(filteredRecipes, recipesCountElement) {
-  const count = filteredRecipes.length;
-  recipesCountElement.textContent = `${count} recettes`;
+export function updateRecipeCount(count, recipesCountElement) {
+  recipesCountElement.textContent = `${count} recette(s)`;
 }

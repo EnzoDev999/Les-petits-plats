@@ -24,14 +24,29 @@ export function updateRecipesWithFilter(category, filterValue) {
 
   // Mise à jour du compteur de recettes
   const recipesCountElement = document.querySelector(".recipes_count");
-  updateRecipeCount(filteredRecipes, recipesCountElement);
+  updateRecipeCount(filteredRecipes.length, recipesCountElement);
 
   // Met à jour les menus déroulants après la mise à jour des recettes
   ["ingredients", "appareils", "ustensiles"].forEach(updateDropdownList);
 }
 
-export function getFilteredRecipes() {
-  return recipes.filter((recipe) => {
+export function getFilteredRecipes(searchText = "") {
+  const lowerCaseSearchText = searchText.toLowerCase();
+
+  const filtered = recipes.filter((recipe) => {
+    // Vérifiez d'abord si la recette correspond à la recherche textuelle
+    if (
+      searchText &&
+      !recipe.name.toLowerCase().includes(lowerCaseSearchText) &&
+      !recipe.description.toLowerCase().includes(lowerCaseSearchText) &&
+      !recipe.ingredients.some((ingredient) =>
+        ingredient.ingredient.toLowerCase().includes(lowerCaseSearchText)
+      )
+    ) {
+      return false;
+    }
+
+    // Puis filtrez par les filtres actifs
     return Object.keys(activeFilters).every((key) => {
       if (activeFilters[key].length === 0) return true;
 
@@ -48,11 +63,12 @@ export function getFilteredRecipes() {
           );
         case "ustensiles":
           return activeFilters[key].every((filter) =>
-            recipe.ustensils.some((ust) => ust.toLowerCase() === filter)
+            recipe.ustensiles.some((ust) => ust.toLowerCase() === filter)
           );
         default:
           return true;
       }
     });
   });
+  return filtered;
 }

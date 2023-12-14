@@ -1,7 +1,7 @@
 import { activeFilters } from "../pages/main.js";
 import { getFilteredRecipes } from "../utils/recipeFilter.js";
 import { displayRecipe } from "./recipeCard.js";
-import { updateDropdownList } from "./dropDown.js";
+import { getFilteredItems, updateDropdownList } from "./dropDown.js";
 import { updateRecipeCount } from "../utils/recipeCountUpdater.js";
 import { recipesCountElement } from "../pages/main.js";
 
@@ -16,8 +16,13 @@ function updateRecipeDisplay() {
 
   // Mise à jour du nombre de recettes
   if (recipesCountElement) {
-    updateRecipeCount(filteredRecipes, recipesCountElement);
+    updateRecipeCount(filteredRecipes.length, recipesCountElement);
   }
+}
+
+function refreshAllDropdowns() {
+  const categories = ["ingredients", "appareils", "ustensiles"];
+  categories.forEach((category) => refreshDropdownsAndMaintainOrder(category));
 }
 
 function createTag(category, item) {
@@ -46,6 +51,8 @@ function createTag(category, item) {
   closeBtn.addEventListener("click", () => {
     removeTag(tag, category, item);
   });
+
+  refreshDropdownsAndMaintainOrder(category);
 }
 
 //trie de mes dropDown (permet de retrier mes listes au complet)
@@ -90,9 +97,6 @@ function removeTag(element, category, itemText) {
     // Trouver et supprimer le tag correspondant dans la liste déroulante
     const dropdownItemSelector = `.dropdown_content_list[data-category="${category}"] li[data-item="${item}"]`;
     const dropdownItem = document.querySelector(dropdownItemSelector);
-    console.log("Élément trouvé:", dropdownItem); // Ceci affichera l'élément trouvé ou `null` si aucun élément n'est trouvé
-
-    console.log(`Recherche de l'élément: ${dropdownItemSelector}`); // Log pour débogage
 
     if (dropdownItem) {
       dropdownItem.classList.remove("dropdown_content_list_selectTag");
@@ -120,9 +124,7 @@ function removeTag(element, category, itemText) {
 
   // Mise à jour de l'affichage des recettes et des listes déroulantes
   updateRecipeDisplay();
-  refreshDropdownsAndMaintainOrder("ingredients");
-  refreshDropdownsAndMaintainOrder("appareils");
-  refreshDropdownsAndMaintainOrder("ustensiles");
+  refreshAllDropdowns(); // Cette fonction s'occupera de rafraîchir toutes les listes déroulantes
 }
 
 // Fonction d'écouteur pour la suppression à partir de la petite croix dans le dropdown
@@ -135,21 +137,32 @@ function removeTagListener(event) {
   removeTag(li, category, itemName);
 }
 
-function refreshDropdownsAndMaintainOrder(category) {
+export function refreshDropdownsAndMaintainOrder(category) {
   // Obtiens tous les éléments de la liste déroulante actuelle avec la classe 'dropdown_content_list_selectTag'
   const dropdownList = document.querySelector(
     `.dropdown_content_list[data-category="${category}"]`
   );
-  // Sauvegarde les éléments sélectionnés dans un tableau pour les remettre plus tard
-  let selectedItemsArray = Array.from(
+  // Définissez selectedItemsArray ici avec les éléments actuellement sélectionnés dans le dropdown
+  const selectedItemsArray = Array.from(
     dropdownList.querySelectorAll(".dropdown_content_list_selectTag")
-  ).map((li) => li.innerText);
+  ).map((li) => li.textContent);
 
-  // Mettre à jour la liste déroulante maintenant
-  updateDropdownList(category);
+  const filteredRecipes = getFilteredRecipes();
+
+  // Vérifiez que filteredRecipes est bien un tableau
+  if (!Array.isArray(filteredRecipes)) {
+    console.error("filteredRecipes doit être un tableau");
+    return; // Sortie anticipée si filteredRecipes n'est pas un tableau
+  }
+
+  // Obtenez les éléments filtrés pour la catégorie actuelle
+  const filteredItems = getFilteredItems(category, filteredRecipes);
+
+  // Mettre à jour la liste déroulante avec les éléments filtrés
+  updateDropdownList(category, filteredItems);
 
   // Trie la liste avec les éléments non sélectionnés restants après la mise à jour
-  sortDropdownList(category); // on s'assure que cette ligne est après l'appel à updateDropdownList pour maintenir l'ordre
+  sortDropdownList(category);
 
   // Remet les éléments sélectionnés au-dessus en conservant leur classe
   selectedItemsArray.forEach((selectedItemText) => {

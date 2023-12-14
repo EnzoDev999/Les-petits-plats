@@ -31,7 +31,7 @@
         }
     }
 
-    .dropdown_content {
+    &_content {
         overflow-y: scroll;
         max-height: 0;
         transition: max-height 0.1s ease-in-out;
@@ -104,8 +104,9 @@
                 }
 
                 &:hover,
-                &:focus {
+                &.focused{
                     background-color: $primary-color;
+                    outline: none;
                 }
 
                 @media screen and (max-width: 1160px) {
