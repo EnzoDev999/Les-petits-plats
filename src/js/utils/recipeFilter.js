@@ -32,43 +32,95 @@ export function updateRecipesWithFilter(category, filterValue) {
 
 export function getFilteredRecipes(searchText = "") {
   const lowerCaseSearchText = searchText.toLowerCase();
+  let filteredRecipes = [];
 
-  const filtered = recipes.filter((recipe) => {
-    // Vérifiez d'abord si la recette correspond à la recherche textuelle
-    if (
-      searchText &&
-      !recipe.name.toLowerCase().includes(lowerCaseSearchText) &&
-      !recipe.description.toLowerCase().includes(lowerCaseSearchText) &&
-      !recipe.ingredients.some((ingredient) =>
-        ingredient.ingredient.toLowerCase().includes(lowerCaseSearchText)
-      )
-    ) {
-      return false;
+  for (let i = 0; i < recipes.length; i++) {
+    const recipe = recipes[i];
+    let matchesSearchText = false;
+    let matchesFilters = true;
+
+    // Vérifier si la recette correspond à la recherche textuelle
+    if (searchText) {
+      matchesSearchText =
+        recipe.name.toLowerCase().includes(lowerCaseSearchText) ||
+        recipe.description.toLowerCase().includes(lowerCaseSearchText);
+
+      for (
+        let j = 0;
+        j < recipe.ingredients.length && !matchesSearchText;
+        j++
+      ) {
+        if (
+          recipe.ingredients[j].ingredient
+            .toLowerCase()
+            .includes(lowerCaseSearchText)
+        ) {
+          matchesSearchText = true;
+        }
+      }
+    } else {
+      matchesSearchText = true; // Si aucun texte de recherche, considérer que cela correspond
     }
 
-    // Puis filtrez par les filtres actifs
-    return Object.keys(activeFilters).every((key) => {
-      if (activeFilters[key].length === 0) return true;
+    // Filtrez par les filtres actifs
+    for (let key in activeFilters) {
+      if (matchesFilters && activeFilters[key].length > 0) {
+        let filterMatch = false;
 
-      switch (key) {
-        case "ingredients":
-          return activeFilters[key].every((filter) =>
-            recipe.ingredients.some(
-              (ing) => ing.ingredient.toLowerCase() === filter
-            )
-          );
-        case "appareils":
-          return activeFilters[key].every(
-            (filter) => recipe.appliance.toLowerCase() === filter
-          );
-        case "ustensiles":
-          return activeFilters[key].every((filter) =>
-            recipe.ustensiles.some((ust) => ust.toLowerCase() === filter)
-          );
-        default:
-          return true;
+        switch (key) {
+          case "ingredients":
+            for (
+              let j = 0;
+              j < recipe.ingredients.length && !filterMatch;
+              j++
+            ) {
+              for (let k = 0; k < activeFilters[key].length; k++) {
+                if (
+                  recipe.ingredients[j].ingredient.toLowerCase() ===
+                  activeFilters[key][k]
+                ) {
+                  filterMatch = true;
+                  break;
+                }
+              }
+            }
+            break;
+          case "appareils":
+            for (
+              let k = 0;
+              k < activeFilters[key].length && !filterMatch;
+              k++
+            ) {
+              if (recipe.appliance.toLowerCase() === activeFilters[key][k]) {
+                filterMatch = true;
+                break;
+              }
+            }
+            break;
+          case "ustensiles":
+            for (let j = 0; j < recipe.ustensiles.length && !filterMatch; j++) {
+              for (let k = 0; k < activeFilters[key].length; k++) {
+                if (
+                  recipe.ustensiles[j].toLowerCase() === activeFilters[key][k]
+                ) {
+                  filterMatch = true;
+                  break;
+                }
+              }
+            }
+            break;
+        }
+
+        if (!filterMatch) {
+          matchesFilters = false;
+        }
       }
-    });
-  });
-  return filtered;
+    }
+
+    if (matchesSearchText && matchesFilters) {
+      filteredRecipes.push(recipe);
+    }
+  }
+
+  return filteredRecipes;
 }
