@@ -34,7 +34,7 @@ export function getFilteredRecipes(searchText = "") {
   const lowerCaseSearchText = searchText.toLowerCase();
 
   const filtered = recipes.filter((recipe) => {
-    // Vérifiez d'abord si la recette correspond à la recherche textuelle
+    // Vérifie d'abord si la recette correspond à la recherche textuelle
     if (
       searchText &&
       !recipe.name.toLowerCase().includes(lowerCaseSearchText) &&
@@ -46,7 +46,7 @@ export function getFilteredRecipes(searchText = "") {
       return false;
     }
 
-    // Puis filtrez par les filtres actifs
+    // Puis filtre par les filtres actifs
     return Object.keys(activeFilters).every((key) => {
       if (activeFilters[key].length === 0) return true;
 

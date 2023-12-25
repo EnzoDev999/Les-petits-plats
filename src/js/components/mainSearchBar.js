@@ -1,9 +1,7 @@
 import { displayRecipe } from "./recipeCard.js";
 import { updateRecipeCount } from "../utils/recipeCountUpdater.js";
-import { updateDropdownList } from "./dropDown.js";
 import { recipesCountElement } from "../pages/main.js";
-import { getFilteredItems } from "./dropDown.js";
-import { getFilteredRecipes } from "../utils/recipeFilter.js"; // Assurez-vous que cette importation est correcte
+import { getFilteredRecipes } from "../utils/recipeFilter.js";
 import { refreshDropdowns } from "./dropDown.js";
 
 export function updateUI(filteredRecipes) {
@@ -28,7 +26,7 @@ export function searchRecipesByText(searchText) {
 
   if (!Array.isArray(filtered)) {
     console.error("Le résultat de getFilteredRecipes doit être un tableau");
-    return []; // Retournez un tableau vide pour éviter des erreurs plus loin dans le code
+    return [];
   }
 
   return filtered;
@@ -37,7 +35,6 @@ export function searchRecipesByText(searchText) {
 // Événement d'entrée pour la barre de recherche principale
 const mainSearchBar = document.getElementById("search-recipe");
 
-// À l'intérieur de votre gestionnaire d'événements 'input' pour la barre de recherche
 mainSearchBar.addEventListener("input", (event) => {
   const searchText = event.target.value.trim();
 

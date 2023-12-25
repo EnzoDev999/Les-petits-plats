@@ -5,20 +5,16 @@ import { createTag } from "./tag.js";
 
 let selectedElementValue; // Pour enregistrer la valeur de l'élément sélectionné
 
-// Assurez-vous que cette fonction est exportée si elle est utilisée en dehors de ce fichier
 export function refreshDropdowns(filteredRecipes) {
-  // S'il n'y a pas de recettes filtrées fournies, utilisez toutes les recettes
   if (!filteredRecipes) {
     filteredRecipes = getFilteredRecipes();
   }
 
-  // Assurez-vous que filteredRecipes est un tableau
   if (!Array.isArray(filteredRecipes)) {
     console.error("filteredRecipes doit être un tableau");
     return; // Sortie anticipée si filteredRecipes n'est pas un tableau
   }
 
-  // Utilisez filteredRecipes pour mettre à jour les dropdowns
   const filteredIngredients = getFilteredItems("ingredients", filteredRecipes);
   const filteredAppareils = getFilteredItems("appareils", filteredRecipes);
   const filteredUstensils = getFilteredItems("ustensiles", filteredRecipes);
@@ -39,16 +35,13 @@ function updateDropdownList(category, filteredItems = null) {
   let itemsToUpdate =
     filteredItems || getFilteredItems(category, filteredRecipes);
 
-  // Assurez-vous que itemsToUpdate est un tableau.
   if (!itemsToUpdate) {
     console.error(`itemsToUpdate est indéfini pour la catégorie: ${category}`);
-    itemsToUpdate = []; // Initialiser à un tableau vide pour éviter des erreurs ultérieures
+    itemsToUpdate = [];
   } else if (!Array.isArray(itemsToUpdate)) {
     console.error(`itemsToUpdate doit être un tableau, reçu:`, itemsToUpdate);
-    itemsToUpdate = []; // Initialiser à un tableau vide pour éviter des erreurs ultérieures
+    itemsToUpdate = [];
   }
-
-  // Ce log doit montrer les éléments qui seront ajoutés au dropdown après le filtrage.
 
   // Vider la liste actuelle
   dropdownList.innerHTML = "";
@@ -73,12 +66,6 @@ function updateDropdownList(category, filteredItems = null) {
 }
 
 export function getFilteredItems(category, filteredRecipes, searchText = "") {
-  console.log(
-    `Début de getFilteredItems avec la catégorie: ${category}`,
-    filteredRecipes
-  );
-
-  // Vérifier que filteredRecipes est bien un tableau
   if (!Array.isArray(filteredRecipes)) {
     console.error("filteredRecipes doit être un tableau dans getFilteredItems");
     return [];
@@ -88,47 +75,38 @@ export function getFilteredItems(category, filteredRecipes, searchText = "") {
 
   // Parcourir les recettes filtrées
   filteredRecipes.forEach((recipe) => {
-    console.log(`Traitement de la recette:`, recipe); // Afficher la recette en cours de traitement
-
     switch (category) {
       case "ingredients":
         recipe.ingredients.forEach((ing) => {
-          console.log(`Traitement de l'ingrédient:`, ing); // Afficher l'ingrédient en cours de traitement
           if (
             !searchText ||
             ing.ingredient.toLowerCase().includes(searchText.toLowerCase())
           ) {
-            allItems.add(ing.ingredient); // Ajouter l'ingrédient si il correspond au critère de recherche
+            allItems.add(ing.ingredient);
           }
         });
         break;
       case "appareils":
-        console.log(`Traitement de l'appareil:`, recipe.appliance); // Afficher l'appareil en cours de traitement
         if (
           !searchText ||
           recipe.appliance.toLowerCase().includes(searchText.toLowerCase())
         ) {
-          allItems.add(recipe.appliance); // Ajouter l'appareil si il correspond au critère de recherche
+          allItems.add(recipe.appliance);
         }
         break;
       case "ustensiles":
         recipe.ustensiles.forEach((ust) => {
-          console.log(`Traitement de l'ustensile:`, ust); // Afficher l'ustensile en cours de traitement
           if (
             !searchText ||
             ust.ustensil.toLowerCase().includes(searchText.toLowerCase())
           ) {
-            allItems.add(ust); // Ajouter l'ustensile si il correspond au critère de recherche
+            allItems.add(ust);
           }
         });
         break;
     }
   });
 
-  console.log(
-    `Éléments trouvés pour la catégorie ${category}:`,
-    Array.from(allItems)
-  );
   return Array.from(allItems).sort((a, b) => a.localeCompare(b));
 }
 

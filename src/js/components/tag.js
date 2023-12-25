@@ -142,20 +142,18 @@ export function refreshDropdownsAndMaintainOrder(category) {
   const dropdownList = document.querySelector(
     `.dropdown_content_list[data-category="${category}"]`
   );
-  // Définissez selectedItemsArray ici avec les éléments actuellement sélectionnés dans le dropdown
+
   const selectedItemsArray = Array.from(
     dropdownList.querySelectorAll(".dropdown_content_list_selectTag")
   ).map((li) => li.textContent);
 
   const filteredRecipes = getFilteredRecipes();
 
-  // Vérifiez que filteredRecipes est bien un tableau
   if (!Array.isArray(filteredRecipes)) {
     console.error("filteredRecipes doit être un tableau");
     return; // Sortie anticipée si filteredRecipes n'est pas un tableau
   }
 
-  // Obtenez les éléments filtrés pour la catégorie actuelle
   const filteredItems = getFilteredItems(category, filteredRecipes);
 
   // Mettre à jour la liste déroulante avec les éléments filtrés

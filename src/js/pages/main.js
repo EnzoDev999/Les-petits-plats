@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   filterSection.appendChild(recipesCountElement);
 
-  // Mettez à jour le compteur de recettes lors de l'initialisation
+  // Met à jour le compteur de recettes lors de l'initialisation
   updateRecipeCount(recipes.length, recipesCountElement);
 
   openCloseDropdown();
